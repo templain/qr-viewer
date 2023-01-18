@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-App<qrcode-viewer>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.qrcode.viewer.App",
+            "projectName": "qrcode-viewer",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>QR Viewer</title>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>Form</h1>
+            <form th:action="@{/qrcode}" method="GET">
+              <p>URL: <input type="url" name="url"/></p>
+              <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+            </form>
+        </div>
+    </body>
+</html>
