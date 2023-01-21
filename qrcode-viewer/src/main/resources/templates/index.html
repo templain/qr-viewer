@@ -8,10 +8,59 @@
     <body>
         <div class="container">
             <h1>Form</h1>
-            <form th:action="@{/qrcode}" method="GET">
-              <p>URL: <input type="url" name="url"/></p>
-              <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+            <form action="" onsubmit="return false;">
+                <div class="row mb-3">
+                    <label for="url" class="col-sm-2 col-form-label">URL</label>
+                    <div class="col-sm-10">
+                        <input type="url" name="url" class="form-control" id="url"/>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="size" class="col-sm-2 col-form-label">画像の拡大率</label>
+                    <div class="col-sm-10">
+                        <input type="range" name="size" min="1" th:max="${sizeNum}" class="form-range" id="size" value="1"/><span id="real-size">1</span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="version" class="col-sm-2 col-form-label">バージョン</label>
+                    <div class="col-sm-10">
+                        <select name="version" class="form-select" id="version">
+                            <option th:each="ver : ${versions}" th:value="${ver}">[[${ver}]]</li>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="version" class="col-sm-2 col-form-label">誤り訂正</label>
+                    <div class="col-sm-10">
+                        <select name="correction" class="form-select" id="correction">
+                            <option th:each="corr : ${corrections}" th:value="${corr}">[[${corr}]]</li>
+                        </select>
+                    </div>
+                </div>
+                <input type="submit" id="submit-btn" class="btn btn-primary" value="Submit" />
             </form>
         </div>
+
+        <img src="" class="img-fluid" id="qrcode-image" alt="Your QRCode">
+
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script>
+            var btn = document.getElementById('submit-btn');
+            btn.addEventListener('click', function() {
+                var url = $("#url").val();
+                var size = $("#size").val();
+                var version = $("#version").val();
+                var correction = $("#correction").val();
+                $("#qrcode-image").attr('src', `output?url=${url}&size=${size}&version=${version}&correction=${correction}`);
+            });
+            var elem = document.getElementById('size');
+            var target = document.getElementById('real-size');
+            var rangeValue = function (elem, target) {
+                return function(evt){
+                    target.innerHTML = elem.value;
+                }
+            }
+            elem.addEventListener('input', rangeValue(elem, target));
+        </script>
     </body>
 </html>

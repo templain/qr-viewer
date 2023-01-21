@@ -12,4 +12,10 @@ import lombok.Getter;
 public class CreateQrcodeCommand {
     @NotNull
     private final String url;
+    @NotNull
+    private final int size;
+    @NotNull
+    private final int version;
+    @NotNull
+    private final String correction;
 }

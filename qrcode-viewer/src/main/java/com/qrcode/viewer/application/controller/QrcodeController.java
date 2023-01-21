@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.stream.IntStream;
 
 import javax.imageio.ImageIO;
 
@@ -31,20 +32,28 @@ public class QrcodeController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String getIndex() {
+    public String getIndex(Model model) {
+        String[] corrections = {"L", "M", "Q", "H"};
+        model.addAttribute("versions", IntStream.rangeClosed(1, 40).toArray());
+        model.addAttribute("corrections", corrections);
+        model.addAttribute("sizeNum", 5);
         return "index";
     }
-
-    @RequestMapping(value = "/qrcode", method = RequestMethod.GET)
-    public String submit(@RequestParam("url")String url, Model model) {
-        model.addAttribute("url", url);
-        return "result";
-    }
-
+    
     @ResponseBody
     @RequestMapping(value = "/output", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] getOutput(@RequestParam(name = "url", required = true)String url) throws IOException {
-        CreateQrcodeResult createQrcodeResult = qrcodeApplicationService.createQrcode(CreateQrcodeCommand.builder().url(url).build());
+    public byte[] getOutput(@RequestParam(name = "url", required = true)String url,
+                            @RequestParam(name = "size", required = true)String size,
+                            @RequestParam(name = "version", required = true)String version,
+                            @RequestParam(name = "correction", required = true)String correction) throws IOException {
+        CreateQrcodeResult createQrcodeResult = qrcodeApplicationService.createQrcode(
+            CreateQrcodeCommand.builder()
+            .url(url)
+            .size(Integer.parseInt(size))
+            .version(Integer.parseInt(version))
+            .correction(correction)
+            .build()
+        );
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ImageIO.write(createQrcodeResult.getImage(), "png", os);
         InputStream is = new ByteArrayInputStream(os.toByteArray());

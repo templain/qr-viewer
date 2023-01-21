@@ -22,11 +22,36 @@ public class QrcodeCreateCommandHandler {
         BufferedImage image;
         try {
             BarcodeFormat format = BarcodeFormat.QR_CODE;
-            int width = 160;
-            int height = 160;
+            int cellSize = 21 + (createQrcodeCommand.getVersion() - 1) * 4;
+            int width =  cellSize * createQrcodeCommand.getSize();
+            int height = cellSize * createQrcodeCommand.getSize();
+            ErrorCorrectionLevel errorCorrectionLevel;
+            switch(createQrcodeCommand.getCorrection()) {
+                case "L":
+                    errorCorrectionLevel = ErrorCorrectionLevel.L;
+                    break;
+                case "M":
+                    errorCorrectionLevel = ErrorCorrectionLevel.M;
+                    break;
+                case "Q":
+                    errorCorrectionLevel = ErrorCorrectionLevel.Q;
+                    break;
+                case "H":
+                    errorCorrectionLevel = ErrorCorrectionLevel.H;
+                    break;
+                default:
+                    log.warn("Unsupported error correction level: {}", createQrcodeCommand.getCorrection());
+                    throw new QrcodeApplicationServiceException("Unsupported error correction level: " + createQrcodeCommand.getCorrection());
+            }
+            if(createQrcodeCommand.getVersion() < 1 || createQrcodeCommand.getVersion() > 40) {
+                log.warn("Invalid version: {}", createQrcodeCommand.getVersion());
+                throw new QrcodeApplicationServiceException("Invalid version:" + createQrcodeCommand.getVersion());
+            }
       
-            Hashtable<EncodeHintType,ErrorCorrectionLevel> hints = new Hashtable<EncodeHintType,ErrorCorrectionLevel>();
-            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+            Hashtable<EncodeHintType,Object> hints = new Hashtable<>();
+            hints.put(EncodeHintType.ERROR_CORRECTION, errorCorrectionLevel);
+            hints.put(EncodeHintType.MARGIN, 2);
+            hints.put(EncodeHintType.QR_VERSION, createQrcodeCommand.getVersion());
       
             QRCodeWriter writer = new QRCodeWriter();
             BitMatrix bitMatrix = writer.encode(createQrcodeCommand.getUrl(), format, width, height, hints);
