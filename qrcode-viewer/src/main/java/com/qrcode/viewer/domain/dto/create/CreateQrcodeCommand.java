@@ -1,5 +1,7 @@
 package com.qrcode.viewer.domain.dto.create;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -10,11 +12,13 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class CreateQrcodeCommand {
-    @NotNull
+    @NotEmpty
     private final String url;
-    @NotNull
+    @Min(1)
     private final int size;
-    @NotNull
+    @Min(0)
+    private final int margin;
+    @Min(1)
     private final int version;
     @NotNull
     private final String correction;

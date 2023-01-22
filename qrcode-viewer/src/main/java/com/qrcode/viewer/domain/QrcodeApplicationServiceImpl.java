@@ -8,9 +8,6 @@ import com.qrcode.viewer.domain.dto.create.CreateQrcodeCommand;
 import com.qrcode.viewer.domain.dto.create.CreateQrcodeResult;
 import com.qrcode.viewer.domain.ports.input.service.QrcodeApplicationService;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Validated
 @Service
 class QrcodeApplicationServiceImpl implements QrcodeApplicationService {

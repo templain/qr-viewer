@@ -22,9 +22,6 @@ public class QrcodeCreateCommandHandler {
         BufferedImage image;
         try {
             BarcodeFormat format = BarcodeFormat.QR_CODE;
-            int cellSize = 21 + (createQrcodeCommand.getVersion() - 1) * 4;
-            int width =  cellSize * createQrcodeCommand.getSize();
-            int height = cellSize * createQrcodeCommand.getSize();
             ErrorCorrectionLevel errorCorrectionLevel;
             switch(createQrcodeCommand.getCorrection()) {
                 case "L":
@@ -47,10 +44,13 @@ public class QrcodeCreateCommandHandler {
                 log.warn("Invalid version: {}", createQrcodeCommand.getVersion());
                 throw new QrcodeApplicationServiceException("Invalid version:" + createQrcodeCommand.getVersion());
             }
+            int cellSize = 21 + (createQrcodeCommand.getVersion() - 1) * 4;
+            int width =  (cellSize + createQrcodeCommand.getMargin() * 2) * createQrcodeCommand.getSize();
+            int height = width;
       
             Hashtable<EncodeHintType,Object> hints = new Hashtable<>();
             hints.put(EncodeHintType.ERROR_CORRECTION, errorCorrectionLevel);
-            hints.put(EncodeHintType.MARGIN, 2);
+            hints.put(EncodeHintType.MARGIN, createQrcodeCommand.getMargin());
             hints.put(EncodeHintType.QR_VERSION, createQrcodeCommand.getVersion());
       
             QRCodeWriter writer = new QRCodeWriter();
